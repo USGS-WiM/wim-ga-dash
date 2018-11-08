@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Hello Analytics Reporting API V4</title>
+  <title>WIM GA Dash</title>
   <meta name="google-signin-client_id" content="1082635176678-ii1ib48u6b9u5ul9lrbaufs5egeustg1.apps.googleusercontent.com">
   <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
 
@@ -18,6 +18,11 @@
 <select id="metricSelect" onchange="multiQuery()">
   <option value="sessions" selected>Sessions</option>
   <option value="users">Users</option>
+  <option value="1dayUsers">1dayUsers</option>
+  <option value="7dayUsers">7dayUsers</option>
+  <option value="14dayUsers">14dayUsers</option>
+  <option value="28dayUsers">28dayUsers</option>
+  <option value="30dayUsers">30dayUsers</option>
 </select>
 
 <p id="metricText">Number of sessions, last 7 days</p>
