@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello Analytics Reporting API V4</title>
+  <meta name="google-signin-client_id" content="1082635176678-ii1ib48u6b9u5ul9lrbaufs5egeustg1.apps.googleusercontent.com">
+  <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
+
+  <script src="View-Ids.js"></script>
+</head>
+<body>
+
+<h1>WIM GA Dashboard (wim g'dash)</h1>
+
+<!-- The Sign-in button. This will run `queryReports()` on success. -->
+<p class="g-signin2" data-onsuccess="multiQuery"></p>
+
+<select id="metricSelect" onchange="multiQuery()">
+  <option value="sessions" selected>Sessions</option>
+  <option value="users">Users</option>
+</select>
+
+<p id="metricText">Number of sessions, last 7 days</p>
+<!-- The API response will be printed here. -->
+<div cols="80" rows="20" id="query-output"></div>
+
+<script>
+  
+  function multiQuery() {
+    document.getElementById('query-output').innerHTML = "";
+    function queryReports(VIEW_ID) {
+      gapi.client.request({
+        path: '/v4/reports:batchGet',
+        root: 'https://analyticsreporting.googleapis.com/',
+        method: 'POST',
+        body: {
+          reportRequests: [
+            {
+              viewId: VIEW_ID,
+              dateRanges: [
+                {
+                  startDate: '7daysAgo',
+                  endDate: 'today'
+                }
+              ],
+              metrics: [
+                {
+                  expression: 'ga:' + document.getElementById('metricSelect').value
+                }
+              ]
+            }
+          ]
+        }
+      }).then(displayResults, console.error.bind(console));
+      
+      function displayResults(response) {
+        var formattedJson = JSON.stringify(response.result, null, 2);
+        document.getElementById('query-output').innerHTML += (retrieveName(VIEW_ID) + ": " + response.result.reports[0].data.totals[0].values[0] + '<br/>');
+        //document.getElementById('query-output').value += formattedJson;
+      }
+    }
+
+    for (var i=0; i<properties.length; i++) {
+      // Query the API and print the results to the page.
+      var VIEW_ID = properties[i].view_id;
+      queryReports(VIEW_ID);
+    }
+  }
+  
+  function retrieveName(view_id) {
+    var name = '';
+    for (var i=0; i<properties.length; i++) {
+      if (properties[i].view_id == view_id) {
+        name = properties[i].name;
+      }
+    }
+    return name;
+  }
+</script>
+
+<!-- Load the JavaScript API client and Sign-in library. -->
+<script src="https://apis.google.com/js/client:platform.js"></script>
+
+</body>
+</html>
